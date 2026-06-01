@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>אימונים חשיפה תקיפה</title>
+  <title>הסמכות נשק- ענף רקם מתקדם</title>
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -80,9 +80,13 @@
   
 <textarea class="detailsField" name="details" placeholder="פירוט:
 גדוד/סיירת/אחר"></textarea>   <!-- כפתור שליחה -->
-<input type="date" id="dateInput" name="date" class="halfInput" required>
-<input type="time" name="time" class="halfInput" required>
-
+<div class="dateTimeRow">
+    <div class="datePickerContainer">
+      <div class="fakeDate" id="dateDisplayText"></div>
+      <input type="date" id="dateDisplay" required>
+      <input type="hidden" name="date_range" id="dateInput">
+    </div> <input type="time" name="time" required>
+  </div>
 <button type="submit" class="submitBtn">
   <img src="assets/butttons/submit.png" alt="הגשה">
 </button>
@@ -96,7 +100,7 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-  emailjs.init("Ak1OHw83c5xwHhhHd");
+  emailjs.init("uc1sEM28TvnUbKJzo");
 </script>
 <script>
 function goToMenu() {
@@ -104,209 +108,131 @@ function goToMenu() {
 }
 
 /* =========================
-   SUBMIT + EMAILJS + POPUP
-========================= */
-document.getElementById("contactForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const name = this.user_name.value.trim();
-    const phone = this.phone_number.value.trim();
-    const job = this.job.value.trim();
-    const solider = this.solider_number.value.trim();
-    const place = this.place.value.trim();
-    const unit = document.getElementById("unitInput").value.trim();
-    const details = this.details.value.trim();
-    const notes = this.notes.value.trim();
-      const date = this.date.value;
-    const time = this.time.value;
-    // ✅ בדיקה שכל השדות מלאים
-  if (!name || !phone || !job || !solider || !place || !unit || !details || !date || !time) {
-    alert("יש למלא את כל השדות לפני שליחה");
-    return;
-}
+     טווח תאריכים אוטומטי ליומיים
+  ========================= */
+  const dateDisplay = document.getElementById("dateDisplay");
+  const dateInput = document.getElementById("dateInput");
+  const dateDisplayText = document.getElementById("dateDisplayText");
 
-const data = {
-    user_name: name,
-    phone_number: phone,
-    job: job,
-    solider_number: solider,
-    place: place,
-    unit: unit,
-    details: details,
-    notes: notes,
-    date: date,
-    time: time,
-    title: "מטאדור"
-};
+  dateDisplay.addEventListener("change", () => {
+      if (!dateDisplay.value) return;
 
-    console.log("DATA:", data);
+      const start = new Date(dateDisplay.value);
+      const end = new Date(start);
+      end.setDate(end.getDate() + 1); // הוספת יום ליצירת טווח של יומיים
 
-Promise.all([
-    emailjs.send("service_f45cdvz", "template_6kkbuqs", data),//גיאלי
-    emailjs.send("service_44vmdgo", "template_6kkbuqs", data),//רון שוורץ
-    emailjs.send("service_tzqwram", "template_6kkbuqs", data),//כללי חתק
-    emailjs.send("service_fdgn3qm", "template_6kkbuqs", data)//נטע שצברג
-])
-.then(() => {
-    console.log("EMAIL SENT TO BOTH");
+      const format = (d) =>
+          `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
 
-    showPopup();
+      const startDateStr = format(start);
+      const endDateStr = format(end);
 
-    this.reset();
-    document.getElementById("selectedUnit").innerText = "בחר חטיבה";
-    document.getElementById("unitInput").value = "";
-})
-.catch((err) => {
-    console.log("ERROR FULL:", err);
-    alert("שגיאה בשליחה");
-});
-});
-function showPopup() {
-    const overlay = document.getElementById("overlay");
-    const popup = document.getElementById("successPopup");
+      // שמירת הטווח המלא בשדה הנסתר שיישלח
+      dateInput.value = `${startDateStr} - ${endDateStr}`;
 
-    overlay.style.display = "block";
-    popup.style.display = "block";
+    // עדכון הטקסט
+    dateDisplayText.innerText = dateInput.value;
 
-    setTimeout(() => {
-        overlay.style.display = "none";
-        popup.style.display = "none";
-    }, 3000);
-}
-
+    /* 👇 שורת השינוי: מציג את האלמנט ברגע שיש ערך */
+    dateDisplayText.style.display = "flex";
+  });
 /* =========================
-   DROPDOWN
-========================= */
+     SUBMIT + EMAILJS
+  ========================= */
+  document.getElementById("contactForm").addEventListener("submit", function (e) {
+      e.preventDefault();
 
-const selected = document.getElementById("selectedUnit");
-const list = document.getElementById("unitList");
-const hiddenInput = document.getElementById("unitInput");
-const dropdown = document.querySelector(".dropdown");
+      const name = this.user_name.value.trim();
+      const phone = this.phone_number.value.trim();
+      const job = this.job.value.trim();
+      const solider = this.solider_number.value.trim();
+      const place = this.place.value.trim();
+      const unit = document.getElementById("unitInput").value.trim();
+      const details = this.details.value.trim();
+      const notes = this.notes.value.trim();
+      const date_range = document.getElementById("dateInput").value;
+      const time = this.time.value;
 
-// פתיחה / סגירה
-selected.addEventListener("click", (e) => {
-    e.stopPropagation();
-    list.style.display = list.style.display === "block" ? "none" : "block";
-});
+      if (!name || !phone || !job || !solider || !place || !unit || !details || !date_range || !time) {
+          alert("יש למלא את כל השדות ולבחור תאריך לפני שליחה");
+          return;
+      }
+const data = {
+          user_name: name,
+          phone_number: phone,
+          job: job,
+          solider_number: solider,
+          place: place,
+          unit: unit,
+          details: details,
+          notes: notes,
+          date_range: date_range, // נשלח כטווח תאריכים מוגדר (למשל: 31/05/2026 - 01/06/2026)
+          time: time,
+          title: "מטאדור"
+      };
 
-// בחירה
-document.querySelectorAll(".dropdownItem").forEach(item => {
-    item.addEventListener("click", () => {
-        const value = item.getAttribute("data-value");
-        const img = item.querySelector("img");
+      console.log("DATA TO SEND:", data);
 
-        hiddenInput.value = value;
+      Promise.all([
+          emailjs.send("service_4vrqa9g", "template_xhbmkmm", data),
+          emailjs.send("service_4vrqa9g", "template_xhbmkmm", data)
+      ])
+      .then(() => {
+          showPopup();
+          this.reset();
+          document.getElementById("selectedUnit").innerText = "בחר חטיבה";
+          document.getElementById("unitInput").value = "";
+          dateDisplayText.innerText = "בחר תאריך";
+      })
+      .catch((err) => {
+          alert("שגיאה בשליחה: " + JSON.stringify(err));
+      });
+  });
 
-        if (img) {
-            selected.innerHTML = `
-                <img src="${img.src}" style="width:25px;height:25px;border-radius:6px;vertical-align:middle;margin-left:6px;">
-                ${value}
-            `;
-        } else {
-            selected.innerHTML = value;
-        }
+  function showPopup() {
+      const overlay = document.getElementById("overlay");
+      const popup = document.getElementById("successPopup");
+      overlay.style.display = "block";
+      popup.style.display = "block";
+      setTimeout(() => {
+          overlay.style.display = "none";
+          popup.style.display = "none";
+      }, 3000);
+  }
 
-        list.style.display = "none";
-    });
-});
+  /* =========================
+     DROPDOWN
+  ========================= */
+  const selected = document.getElementById("selectedUnit");
+  const list = document.getElementById("unitList");
+  const hiddenInput = document.getElementById("unitInput");
+  const dropdown = document.querySelector(".dropdown");
 
-// סגירה בלחיצה מחוץ
-document.addEventListener("click", (e) => {
-    if (!dropdown.contains(e.target)) {
-        list.style.display = "none";
-    }
-});
+  selected.addEventListener("click", (e) => {
+      e.stopPropagation();
+      list.style.display = list.style.display === "block" ? "none" : "block";
+  });
 
-const dateInput = document.getElementById("dateInput");
-const timeInput = document.getElementById("timeInput");
+  document.querySelectorAll(".dropdownItem").forEach(item => {
+      item.addEventListener("click", () => {
+          const value = item.getAttribute("data-value");
+          const img = item.querySelector("img");
+          hiddenInput.value = value;
 
-// ===== DATE =====
-dateInput.addEventListener("focus", function () {
-    if (this.value === "תאריך") {
-        this.value = "";
-        this.type = "date";
-    }
-});
+          if (img) {
+              selected.innerHTML = `<img src="${img.src}" style="width:25px;height:25px;border-radius:6px;vertical-align:middle;margin-left:6px;"> ${value}`;
+          } else {
+              selected.innerHTML = value;
+          }
+          list.style.display = "none";
+      });
+  });
 
-dateInput.addEventListener("blur", function () {
-    if (this.value === "") {
-        this.type = "text";
-        this.value = "תאריך";
-    }
-});
-
-const blockedDates = [
-    "2026-05-12",
-    "2026-05-13",
-    "2026-05-14",
-    "2026-05-17",
-    "2026-05-18",
-    "2026-05-19",
-    "2026-05-20",
-    "2026-05-24",
-    "2026-05-25",
-    "2026-05-16",
-    "2026-05-27",
-];
-
-const blockedDays = [4, 5, 6]; // חמישי, שישי, שבת
-
-let lastValidDate = "";
-
-const today = new Date().toISOString().split("T")[0];
-
-dateInput.addEventListener("change", function () {
-
-    const selectedDate = this.value;
-
-    if (!selectedDate) return;
-
-    const day = new Date(selectedDate).getDay();
-
-    // חסימת חמישי / שישי / שבת
-    if (blockedDays.includes(day)) {
-
-        this.value = lastValidDate;
-
-        setTimeout(() => {
-            alert("לא ניתן לבחור חמישי / שישי / שבת");
-        }, 100);
-
-        return;
-    }
-
-    // חסימת תאריכים ספציפיים
-    if (
-        blockedDates.includes(selectedDate) &&
-        selectedDate !== today
-    ) {
-
-        this.value = lastValidDate;
-
-        setTimeout(() => {
-            alert("התאריך שבחרת אינו זמין");
-        }, 100);
-
-        return;
-    }
-
-    // אם התאריך תקין → שומרים אותו
-    lastValidDate = selectedDate;
-});
-
-// ===== TIME =====
-timeInput.addEventListener("focus", function () {
-    if (this.value === "שעה") {
-        this.value = "";
-        this.type = "time";
-    }
-});
-
-timeInput.addEventListener("blur", function () {
-    if (this.value === "") {
-        this.type = "text";
-        this.value = "שעה";
-    }
-});
+  document.addEventListener("click", (e) => {
+      if (!dropdown.contains(e.target)) {
+          list.style.display = "none";
+      }
+  });
 </script>
 <style>
     body {
