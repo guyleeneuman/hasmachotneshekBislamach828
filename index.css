@@ -603,171 +603,129 @@ body {
         transform: translate(-50%, -50%) scale(1);
     }
 }
+.dateTimeRow {
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+}
 
-/* התאמה ל-date ול-time */
+.dateWrapper {
+    flex: 1;
+    position: relative;
+}
+
 .pillForm input[type="date"],
-.pillForm input[type="time"] {
-    appearance: none;
-    -webkit-appearance: none;
-    
-    width: calc(50% - 8px);
-    padding: 12px 20px;
+.pillForm input[type="time"],
+.fakeDate {
+    width: 100%;
+    box-sizing: border-box;
+
+    height: 55px;
+    padding: 0 16px;
 
     border-radius: 50px;
     border: none;
     outline: none;
 
-    direction: rtl;
     background: #c6350077;
     color: #FFFCE9;
 
     text-align: center;
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-family: "secular";
 
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-/* אייקון לבן (כרום) */
+/* אייקון לבן */
 .pillForm input[type="date"]::-webkit-calendar-picker-indicator,
 .pillForm input[type="time"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
 }
 
-/* כשאין ערך – מציג placeholder */
-input[type="date"]:before {
-    content: "תאריך";
-    color: #FFFCE9;
-    opacity: 0.7;
-}
-
-input[type="time"]:before {
-    content: "שעה";
-    color: #FFFCE9;
-    opacity: 0.7;
-}
-
-/* כשיש ערך – מעלים את ה-placeholder */
-input[type="date"]:focus:before,
-input[type="date"]:valid:before {
-    content: "";
-}
-
-input[type="time"]:focus:before,
-input[type="time"]:valid:before {
-    content: "";
-}
-
-.dateWrapper{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-#dateRangeDisplay{
+#dateRangeDisplay {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
+
+    color: #FFFCE9;
     font-size: 0.85rem;
-    color: #03255A;
     font-family: "secular";
+
     white-space: nowrap;
 }
 
-.dateTimeRow {
-    width: 100%;
-    display: flex;
-    gap: 16px;
-}
-
 .fakeDate {
-    width: calc(50% - 8px);
-    padding: 5px 7vw;
-    border-radius: 50px;
-    border: none;
-    background: #c6350077;
-    color: #FFFCE9;
-
-    text-align: center;
-    font-size: 1.3rem;
-    font-family: "secular";
-
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: none;
+    align-items: center;
+    justify-content: center;
 
     white-space: pre-line;
     cursor: pointer;
+}
 
-    /* 👇 שורת השינוי: מסתיר את האלמנט כשהדף עולה */
-    display: none; 
-    align-items: center;
-    justify-content: center;
+@media (max-width: 600px) {
+
+    .dateTimeRow {
+        gap: 8px;
+    }
+
+    .pillForm input[type="date"],
+    .pillForm input[type="time"],
+    .fakeDate {
+        height: 50px;
+        font-size: 0.9rem;
+        padding: 0 10px;
+    }
+
+    #dateRangeDisplay {
+        font-size: 0.7rem;
+    }
 }
 /* 
-#dateDisplay {
-  position: relative;
-  z-index: 99999;
-}
-
-.dateTimeRow {
-    width: 100%;
-    display: flex;
-    gap: 10px;
-    flex-wrap: nowrap; /* חשוב! לא ירד שורה */
-/* }
-
-.dateTimeRow input,
-.dateTimeRow .fakeDate {
-    flex: 1;          /* במקום calc(50%) */
-     /* min-width: 0;     
-} */  
-
-/* .dateBox {
-    width: 100%;
-    height: 56px;
-    border-radius: 50px;
-    background: #c6350077;
-    color: #FFFCE9;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-family: "secular";
-    font-size: 1.1rem;
-
+.datePickerContainer {
     position: relative;
-    overflow: hidden;
-    gap: 6px;
+    flex: 1;
 }
 
-/* טקסט שמוצג */
-/* #dateText {
+.datePickerContainer::before {
+    content: "תאריך";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    color: rgba(255,252,233,0.7);
+    font-family: "secular";
     pointer-events: none;
-    text-align: center;
-    white-space: pre-line;
-} */
+    z-index: 2;
+}
 
-/* חצי שמאל = תאריך */
-/* .dateBox input[type="date"] {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 50%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-} */
+.datePickerContainer.hasValue::before {
+    display: none;
+}
 
-/* חצי ימין = שעה */
-/* .dateBox input[type="time"] {
+input[type="time"] {
+    position: relative;
+}
+
+.timeWrapper {
+    position: relative;
+    flex: 1;
+}
+
+.timeWrapper::before {
+    content: "שעה";
     position: absolute;
-    right: 0;
-    top: 0;
-    width: 50%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-} */ 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    color: rgba(255,252,233,0.7);
+    pointer-events: none;
+    font-family: "secular";
+} */
