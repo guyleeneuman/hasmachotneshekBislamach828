@@ -269,7 +269,7 @@ body {
 .toForm {
     cursor: pointer;
     position: absolute;
-    top: 75%;
+    top: 80%;
     left: 50%;
     transform: translateX(-50%);
     -webkit-tap-highlight-color: transparent;
@@ -610,7 +610,7 @@ body {
     appearance: none;
     -webkit-appearance: none;
     
-    width: calc(92% - 8px);
+    width: calc(50% - 8px);
     padding: 12px 20px;
 
     border-radius: 50px;
@@ -684,7 +684,7 @@ input[type="time"]:valid:before {
 }
 
 .fakeDate {
-    width: calc(62% - 8px);
+    width: calc(50% - 8px);
     padding: 5px 7vw;
     border-radius: 50px;
     border: none;

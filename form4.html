@@ -82,7 +82,6 @@
 גדוד/סיירת/אחר"></textarea>   <!-- כפתור שליחה -->
 <div class="dateTimeRow">
     <div class="datePickerContainer">
-      <div class="fakeDate" id="dateDisplayText"></div>
       <input type="date" id="dateDisplay" required>
       <input type="hidden" name="date_range" id="dateInput">
     </div> <input type="time" name="time" required>
@@ -119,7 +118,7 @@ function goToMenu() {
 
       const start = new Date(dateDisplay.value);
       const end = new Date(start);
-      end.setDate(end.getDate() + 1); // הוספת יום ליצירת טווח של יומיים
+      end.setDate(end.getDate() + 0); // הוספת יום ליצירת טווח של יומיים
 
       const format = (d) =>
           `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;

@@ -118,7 +118,7 @@ function goToMenu() {
 
       const start = new Date(dateDisplay.value);
       const end = new Date(start);
-      end.setDate(end.getDate() + 1); // הוספת יום ליצירת טווח של יומיים
+      end.setDate(end.getDate() + 2); // הוספת יום ליצירת טווח של יומיים
 
       const format = (d) =>
           `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
